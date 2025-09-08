@@ -48,66 +48,46 @@
 ```
 import random
 
-class VacuumCleanerAgent:
-    def __init__(self):  # Initialize the agent's state (location and dirt status)
-        self.location = "A"  # Initial location (can be "A" or "B")
-        self.dirt_status = {
-            "A": True,
-            "B": True,
-        }  # Initial dirt status (False means no dirt)
+class MedicinePrescribingAgent:
+    def __init__(self):
         self.performance = 0
-
-    def move_left(self):  # Move the agent to the left if possible
-        if self.location == "B":
-            self.location = "A"
-
-    def move_right(self):  # Move the agent to the right if possible
-        if self.location == "A":
-            self.location = "B"
-
-    def suck_dirt(self):  # Suck dirt in the current location if there is dirt
-        if self.dirt_status[self.location]:
-            self.dirt_status[self.location] = False
-            print(f"Sucked dirt in location {self.location}")
-
-    def do_nothing(self):  # Do nothing
-        pass
-
-    def perform_action(self, action):  # Perform the specified action
-        if action == "left":
-            self.performance = self.performance - 1
-            self.move_left()
-        elif action == "right":
-            self.performance = self.performance - 1
-            self.move_right()
-        elif action == "suck":
-            self.performance = self.performance + 10
-            self.suck_dirt()
-        elif action == "nothing":
-            self.do_nothing()
+        self.current_room = 0  # Start in room 0
+    
+    def sense_temperature(self):
+        """Simulate patient temperature in the current room"""
+        return random.uniform(97.0, 102.0)  # random temp between 97 and 102
+    
+    def treat_patient(self, temperature):
+        """Check and treat patient if unhealthy"""
+        if temperature > 98.5:
+            print(f"Room {self.current_room}: Patient temperature = {temperature:.2f}°F -> Unhealthy! Prescribing medicine...")
+            self.performance += 1  # performance increases after treatment
         else:
-            print("Invalid action")
+            print(f"Room {self.current_room}: Patient temperature = {temperature:.2f}°F -> Healthy, no medicine needed.")
+    
+    def move(self):
+        """Move to the next room (0 <-> 1)"""
+        self.current_room = 1 - self.current_room  # toggle between 0 and 1
+        self.performance -= 1  # moving decreases performance
+        print(f"Agent moved to Room {self.current_room}")
+    
+    def run(self, steps=4):
+        """Run the agent for a given number of steps"""
+        for _ in range(steps):
+            temperature = self.sense_temperature()
+            self.treat_patient(temperature)
+            self.move()
+        print("\nFinal Performance Score:", self.performance)
 
-    def print_status(self):  # Print the current status of the agent
-        print(f"Location: {self.location}, Dirt Status: {self.dirt_status}, ", end="")
-        print(f"Perfomance Measure: {self.performance}")
 
-
-# Example usage:
-agent = VacuumCleanerAgent()
-# Move the agent, suck dirt, and do nothing
-agent.perform_action("left")
-agent.print_status()
-agent.perform_action("suck")
-agent.print_status()
-agent.perform_action("right")
-agent.print_status()
-agent.perform_action("suck")
-agent.print_status()
-agent.perform_action("nothing")
-agent.print_status()
+# Main Program
+agent = MedicinePrescribingAgent()
+agent.run(steps=6)  # Run for 6 cycles
 ```
 
 ## Output
-<img width="1680" height="1050" alt="code" src="https://github.com/user-attachments/assets/920e39c2-86af-478d-9400-2e248c77b3ab" />
-<img width="711" height="281" alt="output" src="https://github.com/user-attachments/assets/c0f883ad-5353-453a-9ece-40ae69cb7842" />
+<img width="1680" height="1050" alt="code" src="https://github.com/user-attachments/assets/d5d3622a-e5b2-44dc-8fcc-936696fc1f56" />
+<img width="711" height="281" alt="output" src="https://github.com/user-attachments/assets/61feee58-a0ac-4eca-9f9a-c62a37dbbf09" />
+
+## Result
+An AI agent is develped to solve the given AI problem.
